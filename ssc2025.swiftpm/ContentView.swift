@@ -84,7 +84,6 @@ struct ContentView: View {
                 GlobeView(selectedEvent: $selectedEvent, events: filteredEvents)
                     .edgesIgnoringSafeArea(.all)
                 
-                
                 if let event = selectedEvent {
                     VStack {
                         Spacer()
@@ -93,6 +92,9 @@ struct ContentView: View {
                                 selectedEvent = nil
                             }
                         }
+                        .background(Color.white.opacity(0.9))
+                        .cornerRadius(12)
+                        .padding()
                     }
                     .transition(.move(edge: .bottom))
                 }
