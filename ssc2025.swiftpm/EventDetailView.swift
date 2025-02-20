@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+// Int 확장: 천 단위 구분 기호 없이 문자열로 변환
+extension Int {
+    var noGrouping: String {
+        let formatter = NumberFormatter()
+        formatter.usesGroupingSeparator = false
+        formatter.numberStyle = .none
+        return formatter.string(from: NSNumber(value: self)) ?? "\(self)"
+    }
+}
+
 struct EventDetailView: View {
     var event: DisasterEvent
     var onClose: () -> Void
@@ -14,11 +24,11 @@ struct EventDetailView: View {
     var body: some View {
         ScrollView {  // 내용이 길 경우 스크롤 가능하도록 ScrollView 추가
             VStack(alignment: .leading, spacing: 16) {
-                // 제목 및 연도 정보
+                // 제목 및 연도 정보 (천 단위 구분 기호 없이 표시)
                 Text(event.title)
                     .font(.title)
                     .bold()
-                Text(event.year >= 0 ? "AD \(event.year)" : "BC \(-event.year)")
+                Text(event.year >= 0 ? "AD \(event.year.noGrouping)" : "BC \((-event.year).noGrouping)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
@@ -86,4 +96,3 @@ struct EventDetailView: View {
         .padding()
     }
 }
-
