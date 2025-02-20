@@ -1,21 +1,21 @@
 import SwiftUI
 
 enum TopTimeFilter: String, CaseIterable, Identifiable {
-    case all = "전체"
-    case bce = "기원전"
-    case ceBefore1500 = "기원후 (1500 이전)"
-    case ceAfter1500 = "1500년 이후"
+    case all = "All"
+    case bce = "BCE"
+    case ceBefore1500 = "CE (Before 1500)"
+    case ceAfter1500 = "CE (1500 and later)"
     
     var id: String { self.rawValue }
 }
 
 struct ContentView: View {
     @State private var selectedEvent: DisasterEvent? = nil
-    @State private var selectedTopFilter: TopTimeFilter = .all  // 기본 필터: 전체
-    @State private var selectedCentury: Int? = nil  // 1500년 이후 필터의 100년 단위 선택
-    @State private var showGuideGrid: Bool = false  // 재해 가이드 그리드 페이지 표시 여부
+    @State private var selectedTopFilter: TopTimeFilter = .all  // Default filter: All
+    @State private var selectedCentury: Int? = nil  // For CE (1500 and later) filter: century selection
+    @State private var showGuideGrid: Bool = false  // To show the disaster guide grid page
     
-    // 선택된 필터에 따라 이벤트 필터링
+    // Filter events based on the selected time filter
     var filteredEvents: [DisasterEvent] {
         switch selectedTopFilter {
         case .all:
@@ -34,7 +34,7 @@ struct ContentView: View {
         }
     }
     
-    // 1500년 이후 이벤트들의 100년 단위 구분값 동적 생성
+    // Dynamically generate available centuries for events after 1500
     var availableCenturies: [Int] {
         let centuries = Set(sampleEvents.filter { $0.year >= 1500 }.map { ($0.year / 100) * 100 })
         return centuries.sorted()
@@ -43,13 +43,13 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             VStack {
-                // 상단 필터 버튼
+                // Top filter buttons
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(TopTimeFilter.allCases) { filter in
                             Button(action: {
                                 selectedTopFilter = filter
-                                selectedCentury = nil  // 필터 전환 시 100년 선택 초기화
+                                selectedCentury = nil  // Reset century selection when switching filters
                             }) {
                                 Text(filter.rawValue)
                                     .padding(8)
@@ -62,7 +62,7 @@ struct ContentView: View {
                     .padding(.horizontal)
                 }
                 
-                // 1500년 이후 선택 시 세부 100년 단위 버튼 표시
+                // For CE (1500 and later), show century selection buttons
                 if selectedTopFilter == .ceAfter1500 {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
@@ -103,7 +103,7 @@ struct ContentView: View {
                 }
             }
             
-            // 오른쪽 하단 플로팅 버튼 (EventDetailView가 표시 중이면 숨김)
+            // Floating button at bottom-right – hide if EventDetailView is shown
             if selectedEvent == nil {
                 VStack {
                     Spacer()

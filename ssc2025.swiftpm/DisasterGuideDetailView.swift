@@ -10,23 +10,27 @@ import SwiftUI
 struct DisasterGuideDetailView: View {
     var guide: DisasterGuide
     var body: some View {
-        VStack(spacing: 20) {
-            Text(guide.emoji)
-                .font(.system(size: 80))
-            Text(guide.name)
-                .font(.title)
-                .bold()
-            Text(guide.description)
-                .font(.body)
-            Divider()
-            Text("행동 요령")
-                .font(.headline)
-            Text(guide.recommendedActions)
-                .font(.body)
-            Spacer()
+        ScrollView {
+            VStack(spacing: 20) {
+                Image(guide.iconName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 80)
+                Text(guide.name)
+                    .font(.title)
+                    .bold()
+                Text(guide.description)
+                    .font(.body)
+                Divider()
+                Text("Recommended Actions")
+                    .font(.headline)
+                Text(guide.recommendedActions)
+                    .font(.body)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+            }
+            .padding()
         }
-        .padding()
         .navigationTitle(guide.name)
     }
 }
-
