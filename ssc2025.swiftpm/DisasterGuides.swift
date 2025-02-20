@@ -37,6 +37,7 @@ let disasterGuides: [DisasterGuide] = [
         • If outdoors, move to an open area away from buildings, trees, and utility wires.
         • If in a vehicle, stop safely, remain inside, and avoid using elevators.
         Stay alert for aftershocks and follow instructions from local emergency services.
+        
         (Source: https://www.cdc.gov/earthquakes/safety/stay-safe-during-an-earthquake.html)
         """
     ),
@@ -50,6 +51,7 @@ let disasterGuides: [DisasterGuide] = [
         • Do not wait for the first wave to subside; subsequent waves may be larger.
         • Follow local emergency alerts and evacuation orders.
         • Avoid returning to the coast until authorities declare it safe.
+        
         (Source: https://jla-lifesaving.or.jp/en/watersafety/tsunami/)
         """
     ),
@@ -65,6 +67,7 @@ let disasterGuides: [DisasterGuide] = [
           - If outdoors, evacuate to higher ground.
         • Protect yourself from ash by wearing an N95 mask, goggles, and long-sleeved clothing.
         • Prepare an emergency kit with food, water, medications, and important documents.
+        
         (Source: https://www.redcross.org/get-help/how-to-prepare-for-emergencies/types-of-emergencies/volcano.html)
         """
     ),
@@ -79,6 +82,7 @@ let disasterGuides: [DisasterGuide] = [
         • If outdoors or in a mobile home, move to a sturdy building or lie in a low-lying area and cover your head.
         • Do not wait until you see the tornado—act as soon as a warning is issued.
         Follow instructions from your local National Weather Service.
+        
         (Source: https://www.weather.gov/bmx/sps_torsafetyrules)
         """
     )

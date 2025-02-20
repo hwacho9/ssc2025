@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Int 확장: 천 단위 구분 기호 없이 문자열로 변환
+// Int extension: Convert number to string without grouping separators
 extension Int {
     var noGrouping: String {
         let formatter = NumberFormatter()
@@ -22,9 +22,9 @@ struct EventDetailView: View {
     var onClose: () -> Void
     
     var body: some View {
-        ScrollView {  // 내용이 길 경우 스크롤 가능하도록 ScrollView 추가
+        ScrollView {  // Allows scrolling if content is long
             VStack(alignment: .leading, spacing: 16) {
-                // 제목 및 연도 정보 (천 단위 구분 기호 없이 표시)
+                // Title and Year (without grouping separators)
                 Text(event.title)
                     .font(.title)
                     .bold()
@@ -32,55 +32,56 @@ struct EventDetailView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
-                // 기본 설명
+                // Description
                 Text(event.description)
                     .font(.body)
                 
                 Divider()
                 
-                // 강도 정보
-                Text("강도")
+                // Intensity
+                Text("Intensity")
                     .font(.headline)
                 Text(event.intensity)
                     .font(.body)
                 
                 Divider()
                 
-                // 피해 기록
-                Text("피해 기록")
+                // Damage Report
+                Text("Damage Report")
                     .font(.headline)
                 Text(event.damageReport)
                     .font(.body)
                 
                 Divider()
                 
-                // 대피 지침
-                Text("대피 지침")
+                // Evacuation Instructions
+                Text("Evacuation Instructions")
                     .font(.headline)
                 Text(event.evacuationInstructions)
                     .font(.body)
                 
-                Divider()
-                
-                // 대피 단계 및 주의사항 (순차적으로)
-                Text("대피 단계 및 주의사항")
-                    .font(.headline)
-                ForEach(Array(event.evacuationSteps.enumerated()), id: \.offset) { index, step in
-                    HStack(alignment: .top) {
-                        Text("\(index + 1).")
-                            .bold()
-                        Text(step)
+                // Evacuation Steps (only if available)
+                if !event.evacuationSteps.isEmpty {
+                    Divider()
+                    Text("Evacuation Steps")
+                        .font(.headline)
+                    ForEach(Array(event.evacuationSteps.enumerated()), id: \.offset) { index, step in
+                        HStack(alignment: .top) {
+                            Text("\(index + 1).")
+                                .bold()
+                            Text(step)
+                        }
+                        .font(.body)
                     }
-                    .font(.body)
                 }
                 
                 Spacer(minLength: 20)
                 
-                // 닫기 버튼
+                // Close Button
                 Button(action: {
                     onClose()
                 }) {
-                    Text("닫기")
+                    Text("Close")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()

@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum EventType {
-    case earthquake, volcano
+    case earthquake, volcano, flood, tornado, earthquakeAndTsunami
 }
 
 struct DisasterEvent: Identifiable {
@@ -17,156 +17,357 @@ struct DisasterEvent: Identifiable {
     let type: EventType
     let latitude: Double
     let longitude: Double
-    let year: Int   // 음수: 기원전, 양수: 기원후
+    let year: Int   // Negative: BCE, Positive: CE
     let description: String
-    let intensity: String         // 예: "진도 7", "VEI 5" 등
-    let damageReport: String      // 피해 기록 상세 설명
-    let evacuationInstructions: String  // 간단한 대피 지침
-    let evacuationSteps: [String] // 순차적인 대피 단계 및 주의사항
+    let intensity: String         // e.g. "Magnitude 7", "VEI 5", etc.
+    let damageReport: String      // Detailed damage report
+    let evacuationInstructions: String  // For ancient events, historical record notes or "Historical record: No evacuation instructions available."
+    let evacuationSteps: [String] // For ancient events, empty if not available
 }
 
 let sampleEvents: [DisasterEvent] = [
-    // 1. 고대 사건들 (5개)
+    // 1. BCE / Ancient events (5 items)
     DisasterEvent(
-        title: "Ancient Anatolian Earthquake",
+        title: "1920 BC Qinghai Jishi Gorge Outburst Flood",
+        type: .flood,
+        latitude: 36.0,
+        longitude: 100.0,
+        year: -1920,
+        description: "Around 1920 BC, landslides triggered by an earthquake dammed the Yellow River in the Jishi Gorge, resulting in a colossal outburst flood.",
+        intensity: "N/A",
+        damageReport: "Sediment deposits and geological evidence indicate a catastrophic flood that dramatically altered the river’s course.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "479 BC Potidaea Earthquake",
         type: .earthquake,
-        latitude: 39.0,
-        longitude: 35.0,
-        year: -100,
-        description: "기원전 100년, Anatolia 지역에서 발생한 강진.",
-        intensity: "진도 7 (MMI 기준)",
-        damageReport: "전통 건축물 대파괴, 수많은 인명 피해 추정. " + CommonDetails.severeCollapse,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: [
-            "즉시 실내의 튼튼한 구조물 아래로 대피",
-            "밖으로 나가기 전 주변 상황을 확인",
-            "대피소로 이동하여 안전 여부 확인"
-        ]
+        latitude: 39.7,
+        longitude: 23.3,
+        year: -479,
+        description: "A major earthquake in 479 BC in the North Aegean Sea, triggering a tsunami that, according to ancient accounts, saved the colony of Potidaea from Persian invasion.",
+        intensity: "Approx. 7.0",
+        damageReport: "Ancient records mention a tsunami event with severe coastal impact.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
     ),
     DisasterEvent(
-        title: "Mount Vesuvius Eruption",
-        type: .volcano,
-        latitude: 40.821,
-        longitude: 14.426,
-        year: 79,
-        description: "AD 79년, 베수비오 화산 폭발로 폼페이 파괴.",
-        intensity: "VEI 5",
-        damageReport: CommonDetails.severeCollapse,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: CommonDetails.advancedSteps
-    ),
-    DisasterEvent(
-        title: "Ancient Egyptian Earthquake",
+        title: "464 BC Sparta Earthquake",
         type: .earthquake,
-        latitude: 30.0,
-        longitude: 31.2,
-        year: -200,
-        description: "기원전 200년, 이집트 지역에서 발생한 강진.",
-        intensity: "진도 6 (MMI 기준)",
-        damageReport: "피라미드 주변 건축물에 일부 손상 발생. " + CommonDetails.moderateDamage,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: [
-            "즉시 실내에서 대피",
-            "강가로 이동",
-            "대피소에서 추가 지시 확인"
-        ]
+        latitude: 37.08,
+        longitude: 22.43,
+        year: -464,
+        description: "An earthquake in Sparta around 464 BC that led to widespread destruction and contributed to social unrest.",
+        intensity: "Approx. 7.2",
+        damageReport: "Historical sources note extensive damage to public and religious structures.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
     ),
     DisasterEvent(
-        title: "Ancient Greek Earthquake",
+        title: "226 BC Rhodes Earthquake",
         type: .earthquake,
-        latitude: 37.9,
-        longitude: 23.7,
-        year: -300,
-        description: "기원전 300년, 그리스 지역에서 발생한 지진.",
-        intensity: "진도 7 (MMI 기준)",
-        damageReport: "고대 건축물 파손, 문화재 손실 우려. " + CommonDetails.moderateDamage,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: [
-            "실내 대피",
-            "열린 광장으로 이동",
-            "현지 관리인의 지시 따르기"
-        ]
+        latitude: 36.0,
+        longitude: 28.0,
+        year: -226,
+        description: "An earthquake in 226 BC that destroyed the Colossus of Rhodes and the city of Kameiros.",
+        intensity: "N/A",
+        damageReport: "Ancient texts document the complete destruction of iconic structures.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
     ),
     DisasterEvent(
-        title: "Ancient Roman Earthquake",
+        title: "60 BC Portugal and Galicia Earthquake",
         type: .earthquake,
-        latitude: 41.9,
-        longitude: 12.5,
-        year: -50,
-        description: "기원전 50년, 로마에서 발생한 대지진.",
-        intensity: "진도 7.5 (MMI 기준)",
-        damageReport: "도시 전역에 건물 붕괴, 많은 인명 피해. " + CommonDetails.severeCollapse,
-        evacuationInstructions: "즉시 로마 외곽으로 대피.",
-        evacuationSteps: [
-            "건물 대피",
-            "로마 외곽으로 이동",
-            "안전 지역에서 추가 지시 확인"
-        ]
+        latitude: 41.0,
+        longitude: -8.0,
+        year: -60,
+        description: "A devastating earthquake along the coasts of Portugal and Galicia around 60 BC, estimated at magnitude 8.5, which triggered a destructive tsunami.",
+        intensity: "Approx. 8.5",
+        damageReport: "Ancient sources describe extensive coastal devastation due to the tsunami.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
     ),
-    // 2. 중세 ~ 르네상스 시대 (2개)
+    // 2. Additional Ancient/Medieval events (11 items)
     DisasterEvent(
-        title: "Medieval European Earthquake",
+        title: "1033 Jordan Valley Earthquake",
         type: .earthquake,
-        latitude: 48.8,
-        longitude: 2.3,
-        year: 1200,
-        description: "중세 유럽, 파리 근교에서 발생한 강진.",
-        intensity: "진도 6.5",
-        damageReport: "교회 및 성벽에 일부 손상 발생. " + CommonDetails.moderateDamage,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: [
-            "즉시 건물 밖으로 대피",
-            "공공 광장으로 이동",
-            "지역 경비대의 지시 따르기"
-        ]
+        latitude: 32.5,
+        longitude: 35.5,
+        year: 1033,
+        description: "A major earthquake struck the Jordan Valley in 1033, causing widespread destruction across the Levant.",
+        intensity: "Approx. 7.3",
+        damageReport: "Historical records estimate high fatalities with severe damage to ancient settlements.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
     ),
     DisasterEvent(
-        title: "Medieval Islamic Earthquake",
+        title: "1138 Aleppo Earthquake",
         type: .earthquake,
-        latitude: 35.7,
-        longitude: 51.4,
-        year: 1300,
-        description: "중세 이슬람 지역, 테헤란 근처에서 발생한 지진.",
-        intensity: "진도 7 (MMI 기준)",
-        damageReport: "전통 건축물 파손 및 시장 붕괴. " + CommonDetails.moderateDamage,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: [
-            "신속 대피",
-            "안전한 곳으로 이동",
-            "지역 당국의 지시 따르기"
-        ]
+        latitude: 36.1,
+        longitude: 36.8,
+        year: 1138,
+        description: "A catastrophic earthquake in Aleppo in 1138 with estimates of up to 230,000 fatalities.",
+        intensity: "Approx. 7.1",
+        damageReport: "Contemporary accounts detail widespread collapse of temples and markets.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
     ),
     DisasterEvent(
-        title: "Renaissance Italian Earthquake",
+        title: "1139 Ganja Earthquake",
         type: .earthquake,
-        latitude: 43.8,
-        longitude: 11.3,
-        year: 1500,
-        description: "르네상스 시대, 이탈리아에서 발생한 강진.",
-        intensity: "진도 6.8",
-        damageReport: "미술관 및 건축물 일부 파손. " + CommonDetails.moderateDamage,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: [
-            "건물 밖으로 대피",
-            "안전 지역으로 이동",
-            "응급 구조 요청"
-        ]
+        latitude: 40.3,
+        longitude: 46.2,
+        year: 1139,
+        description: "An earthquake in 1139 that devastated the city of Ganja in Azerbaijan, with fatalities estimated between 230,000 and 300,000.",
+        intensity: "Approx. 7.7",
+        damageReport: "Historical accounts describe total destruction and catastrophic loss of life.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
     ),
-    // 3. 17~19세기 사건들 (3개)
+    DisasterEvent(
+        title: "1157 Hama Earthquake",
+        type: .earthquake,
+        latitude: 35.1,
+        longitude: 36.3,
+        year: 1157,
+        description: "A destructive earthquake near Hama in 1157, noted for its prolonged sequence.",
+        intensity: "Approx. 7.2",
+        damageReport: "Records indicate severe damage in Hama and surrounding areas.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1556 Shaanxi Earthquake",
+        type: .earthquake,
+        latitude: 34.5,
+        longitude: 109.7,
+        year: -1556,
+        description: "The deadliest recorded earthquake in 1556 in Shaanxi, China, with an estimated death toll exceeding 830,000.",
+        intensity: "8.2–8.3",
+        damageReport: "Ancient records describe entire villages leveled and catastrophic loss of life.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1575 Valdivia Earthquake",
+        type: .earthquake,
+        latitude: -39.8,
+        longitude: -73.2,
+        year: 1575,
+        description: "A major earthquake in Valdivia, Chile, which triggered a destructive tsunami and altered the coastal landscape.",
+        intensity: "8.5",
+        damageReport: "Historical accounts report widespread structural collapse and extensive coastal flooding.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1700 Cascadia Earthquake",
+        type: .earthquake,
+        latitude: 44.0,
+        longitude: -124.0,
+        year: 1700,
+        description: "An inferred megathrust earthquake along the Cascadia subduction zone, known from tsunami deposits in Japan.",
+        intensity: "9.0 (estimated)",
+        damageReport: "Geological evidence indicates massive uplift and extensive disruption along the Pacific Northwest coast.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1707 Hōei Earthquake and Tsunami",
+        type: .earthquakeAndTsunami, // If not defined, you can use .earthquake
+        latitude: 33.0,
+        longitude: 136.0,
+        year: 1707,
+        description: "On October 28, 1707, the Hōei earthquake struck Japan, triggering a large tsunami that devastated the Tōkai region. This seismic event is also notably linked to the subsequent eruption of Mount Fuji in December 1707.",
+        intensity: "8.6 (Richter)",
+        damageReport: "Historical records indicate widespread destruction across the Tōkai region with an estimated 5,000 fatalities. Coastal communities were severely affected by the tsunami, and many structures were completely demolished.",
+        evacuationInstructions: "Historical record: No formal evacuation procedures were documented for this event.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1755 Lisbon Earthquake",
+        type: .earthquakeAndTsunami,
+        latitude: 38.7,
+        longitude: -9.0,
+        year: 1755,
+        description: "One of Europe's most devastating earthquakes, causing massive destruction and a huge tsunami.",
+        intensity: "8.5",
+        damageReport: "Contemporary accounts detail nearly 80,000 fatalities, complete collapse of buildings, and a tsunami that swept through coastal areas.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1755 Meknes Earthquake",
+        type: .earthquake,
+        latitude: 34.0,
+        longitude: -5.0,
+        year: 1755,
+        description: "An earthquake in Meknes, Morocco that resulted in extensive destruction.",
+        intensity: "6.5–7.0",
+        damageReport: "Historical documents report large sections of the city destroyed with thousands of casualties.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1759 Near East Earthquake",
+        type: .earthquake,
+        latitude: 33.7,
+        longitude: 35.9,
+        year: 1759,
+        description: "A series of earthquakes in the Near East that resulted in widespread damage and thousands of fatalities.",
+        intensity: "7.4",
+        damageReport: "Ancient sources indicate severe destruction across multiple cities.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1762 Arakan Earthquake",
+        type: .earthquakeAndTsunami,
+        latitude: 21.0,  // Approximate
+        longitude: 92.0, // Approximate
+        year: 1762,
+        description: "A massive earthquake in the Bay of Bengal region that triggered a devastating tsunami.",
+        intensity: "Up to 8.8",
+        damageReport: "Reports suggest widespread collapse of structures and a tsunami that caused extensive loss of life along the coast.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1763 Komárom Earthquake",
+        type: .earthquake,
+        latitude: 47.73,
+        longitude: 18.15,
+        year: 1763,
+        description: "A moderate earthquake in the Kingdom of Hungary with localized damage.",
+        intensity: "6.2–6.5",
+        damageReport: "Localized damage was reported with limited fatalities.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1766 Istanbul Earthquake",
+        type: .earthquake,
+        latitude: 40.8,
+        longitude: 29.0,
+        year: 1766,
+        description: "A destructive earthquake in Istanbul that severely damaged historic structures.",
+        intensity: "7.1",
+        damageReport: "Historical records describe widespread collapse of buildings and significant urban damage.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1770 Port-au-Prince Earthquake",
+        type: .earthquake,
+        latitude: 18.7,
+        longitude: -72.63,
+        year: 1770,
+        description: "A severe earthquake in Port-au-Prince, Haiti, causing significant casualties and destruction.",
+        intensity: "7.5",
+        damageReport: "Historical accounts detail extensive structural collapse and major disruption in urban areas.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1773 Guatemala Earthquake",
+        type: .earthquake,
+        latitude: 14.6,
+        longitude: -90.7,
+        year: 1773,
+        description: "A significant earthquake in Guatemala with variable reported fatalities.",
+        intensity: "7.5",
+        damageReport: "Records indicate widespread damage with casualty figures ranging widely.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1780 Tabriz Earthquake",
+        type: .earthquake,
+        latitude: 38.0,
+        longitude: 46.2,
+        year: 1780,
+        description: "A devastating earthquake in Tabriz, Iran with a catastrophic death toll.",
+        intensity: "7.4",
+        damageReport: "Historical documentation cites between 40,000 and 200,000 fatalities with entire districts reduced to rubble.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1783 Calabrian Earthquakes",
+        type: .earthquake,
+        latitude: 38.15,
+        longitude: 15.70,
+        year: 1783,
+        description: "A series of powerful earthquakes in Calabria, Italy, that devastated several cities.",
+        intensity: "6.9",
+        damageReport: "Widespread destruction with entire urban areas demolished and tens of thousands dead.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1786 Kangding-Luding Earthquake",
+        type: .earthquake,
+        latitude: 29.9,
+        longitude: 102.0,
+        year: 1786,
+        description: "A catastrophic earthquake in Sichuan, China, triggering landslides that dammed rivers and caused a massive flood.",
+        intensity: "7.75",
+        damageReport: "Ancient records report nearly 100,000 casualties with landslides and dam failures compounding the destruction.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1787 New Spain Earthquake",
+        type: .earthquake,
+        latitude: 16.5,
+        longitude: -98.5,
+        year: 1787,
+        description: "An intense earthquake in New Spain (Mexico) that caused significant structural damage.",
+        intensity: "8.6",
+        damageReport: "Historical accounts describe widespread ruin with entire communities suffering severe destruction.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1797 Riobamba Earthquake",
+        type: .earthquake,
+        latitude: 0.0,  // Coordinates not specified; set as 0.0
+        longitude: 0.0,
+        year: 1797,
+        description: "A significant earthquake in Riobamba, Ecuador, with widespread impact.",
+        intensity: "7.3",
+        damageReport: "Extensive damage across affected areas with complete devastation of several communities.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    DisasterEvent(
+        title: "1797 Sumatra Earthquake",
+        type: .earthquakeAndTsunami,
+        latitude: -1.0,
+        longitude: 99.0,
+        year: 1797,
+        description: "A powerful earthquake in Sumatra that triggered a tsunami with major coastal damage.",
+        intensity: "8.4",
+        damageReport: "Ancient records note severe destruction of coastal settlements and heavy loss of life.",
+        evacuationInstructions: "Historical record: No evacuation instructions available.",
+        evacuationSteps: []
+    ),
+    // 3. Medieval to Renaissance events are above; now modern events (from 19th century onward)
+    // 19th century (4 items)
     DisasterEvent(
         title: "17th Century Dutch Earthquake",
         type: .earthquake,
         latitude: 52.4,
         longitude: 4.9,
         year: 1650,
-        description: "17세기 네덜란드, 암스테르담 인근에서 발생한 소규모 지진.",
-        intensity: "진도 5.5",
-        damageReport: "경미한 건물 손상 및 창문 파손. " + CommonDetails.moderateDamage,
+        description: "A minor earthquake near Amsterdam in the 17th century.",
+        intensity: "5.5",
+        damageReport: "Minor damage to buildings and windows. " + CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 대피",
-            "열린 광장으로 이동",
-            "지역 당국의 지시 확인"
+            "Evacuate immediately.",
+            "Move to an open square.",
+            "Follow local guidance."
         ]
     ),
     DisasterEvent(
@@ -175,14 +376,14 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 51.5,
         longitude: -0.1,
         year: 1750,
-        description: "18세기 영국, 런던에서 발생한 강진.",
-        intensity: "진도 6.0",
-        damageReport: "주요 건물 일부 파손 및 유리창 파손. " + CommonDetails.moderateDamage,
+        description: "A significant earthquake in London during the 18th century.",
+        intensity: "6.0",
+        damageReport: "Damage to major buildings and broken windows. " + CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "건물 대피",
-            "안전 지역으로 이동",
-            "응급 구조 요청"
+            "Evacuate the building.",
+            "Move to a safe area.",
+            "Call emergency services."
         ]
     ),
     DisasterEvent(
@@ -191,31 +392,31 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 55.7,
         longitude: 37.6,
         year: 1880,
-        description: "19세기 러시아, 모스크바 인근에서 발생한 지진.",
-        intensity: "진도 6.5",
-        damageReport: "전통 건축물에 일부 파손 발생. " + CommonDetails.moderateDamage,
+        description: "An earthquake near Moscow in the 19th century.",
+        intensity: "6.5",
+        damageReport: "Damage to traditional buildings reported. " + CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 건물 밖으로 대피",
-            "안전 지역으로 이동",
-            "응급 구조대에 연락"
+            "Evacuate immediately.",
+            "Move to a safe area.",
+            "Contact emergency services."
         ]
     ),
-    // 4. 20세기 초 사건들 (4개)
+    // Early 20th century (4 items)
     DisasterEvent(
         title: "1900 Philippine Earthquake",
         type: .earthquake,
         latitude: 14.6,
         longitude: 121.0,
         year: 1900,
-        description: "1900년 필리핀에서 발생한 대지진.",
-        intensity: "진도 7.0",
+        description: "A major earthquake in the Philippines in 1900.",
+        intensity: "7.0",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 대피",
-            "고지대로 이동",
-            "지역 당국 지시 따르기"
+            "Evacuate immediately.",
+            "Move to higher ground.",
+            "Follow local instructions."
         ]
     ),
     DisasterEvent(
@@ -224,14 +425,14 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 42.7,
         longitude: 21.1,
         year: 1912,
-        description: "1912년 발칸 반도에서 발생한 대지진.",
-        intensity: "진도 7.2",
+        description: "A major earthquake in the Balkans in 1912.",
+        intensity: "7.2",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 대피",
-            "열린 공간으로 이동",
-            "지역 응급 서비스 연락"
+            "Evacuate immediately.",
+            "Move to open space.",
+            "Contact emergency services."
         ]
     ),
     DisasterEvent(
@@ -240,14 +441,14 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 35.7,
         longitude: 139.7,
         year: 1923,
-        description: "1923년 일본 관동 대지진.",
-        intensity: "규모 7.9 (리히터)",
+        description: "The devastating Great Kanto Earthquake in Japan.",
+        intensity: "7.9 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 대피",
-            "안전 지역으로 이동",
-            "응급 구조대 지시 확인"
+            "Evacuate immediately.",
+            "Move to a safe area.",
+            "Follow emergency instructions."
         ]
     ),
     DisasterEvent(
@@ -256,31 +457,31 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 33.8,
         longitude: -118.2,
         year: 1933,
-        description: "1933년 롱비치에서 발생한 지진.",
-        intensity: "진도 6.4",
+        description: "An earthquake in Long Beach, California in 1933.",
+        intensity: "6.4",
         damageReport: CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "건물 대피",
-            "안전한 곳으로 이동",
-            "지역 당국의 지시 따르기"
+            "Evacuate the building.",
+            "Move to a safe location.",
+            "Follow local guidance."
         ]
     ),
-    // 5. 1948년 ~ 1950 사건들 (2개)
+    // Late 1940s–1950 events (2 items)
     DisasterEvent(
         title: "1948 Ashgabat Earthquake",
         type: .earthquake,
         latitude: 37.9,
         longitude: 58.4,
         year: 1948,
-        description: "1948년 아슈하바트에서 발생한 강진.",
-        intensity: "진도 8.1",
+        description: "A devastating earthquake in Ashgabat in 1948.",
+        intensity: "8.1",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 건물 밖으로 대피",
-            "임시 대피소로 이동",
-            "국제 구조대 연락"
+            "Evacuate immediately.",
+            "Move to temporary shelters.",
+            "Contact international rescue teams."
         ]
     ),
     DisasterEvent(
@@ -289,31 +490,31 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 20.0,
         longitude: 77.0,
         year: 1950,
-        description: "1950년 인도 중부에서 발생한 강진.",
-        intensity: "진도 7.0",
+        description: "A major earthquake in central India in 1950.",
+        intensity: "7.0",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 대피",
-            "농촌 지역을 벗어나기",
-            "지역 당국과 연락"
+            "Evacuate immediately.",
+            "Leave rural areas.",
+            "Contact local authorities."
         ]
     ),
-    // 6. 1960년대 ~ 1980년대 사건들 (4개)
+    // 1960s–1980s events (4 items)
     DisasterEvent(
         title: "1964 Alaska Earthquake",
         type: .earthquake,
         latitude: 61.0,
         longitude: -147.7,
         year: 1964,
-        description: "1964년 알래스카에서 발생한 대지진.",
-        intensity: "규모 9.2 (리히터)",
+        description: "A massive earthquake in Alaska in 1964.",
+        intensity: "9.2 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 건물 밖으로 대피",
-            "높은 지대로 이동",
-            "지역 당국의 지시 따르기"
+            "Evacuate immediately.",
+            "Move to higher ground.",
+            "Follow emergency instructions."
         ]
     ),
     DisasterEvent(
@@ -322,14 +523,14 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 39.6,
         longitude: 118.2,
         year: 1976,
-        description: "1976년 중국 탕산에서 발생한 대지진.",
-        intensity: "규모 7.5 (리히터)",
+        description: "A catastrophic earthquake in Tangshan, China in 1976.",
+        intensity: "7.5 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 대피",
-            "안전 지역으로 이동",
-            "응급 구조 요청"
+            "Evacuate immediately.",
+            "Move to a safe area.",
+            "Call for emergency assistance."
         ]
     ),
     DisasterEvent(
@@ -338,14 +539,14 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 35.4,
         longitude: 1.5,
         year: 1980,
-        description: "1980년 알제리 엘아스남에서 발생한 강진.",
-        intensity: "진도 7.3",
+        description: "A destructive earthquake in El Asnam, Algeria in 1980.",
+        intensity: "7.3",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 건물 대피",
-            "안전 지역으로 이동",
-            "응급 구조대 연락"
+            "Evacuate immediately.",
+            "Move to a safe area.",
+            "Contact emergency services."
         ]
     ),
     DisasterEvent(
@@ -354,25 +555,25 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 37.0,
         longitude: -122.0,
         year: 1989,
-        description: "1989년 로마 프리에타 지진.",
-        intensity: "규모 6.9 (리히터)",
+        description: "The Loma Prieta Earthquake in California in 1989.",
+        intensity: "6.9 (Richter)",
         damageReport: CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 건물 밖으로 대피",
-            "안전한 지역으로 이동",
-            "응급 구조대에 연락"
+            "Evacuate immediately.",
+            "Move to a safe area.",
+            "Contact emergency services."
         ]
     ),
-    // 7. 1990년대 사건들 (4개)
+    // 1990s events (4 items)
     DisasterEvent(
         title: "1994 Northridge Earthquake",
         type: .earthquake,
         latitude: 34.2,
         longitude: -118.5,
         year: 1994,
-        description: "1994년 노스리지 지진.",
-        intensity: "규모 6.7 (리히터)",
+        description: "The Northridge Earthquake in California in 1994.",
+        intensity: "6.7 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -383,14 +584,14 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 34.7,
         longitude: 135.2,
         year: 1995,
-        description: "1995년 일본 고베에서 발생한 대지진.",
-        intensity: "규모 6.9 (리히터)",
+        description: "The Kobe Earthquake in Japan in 1995.",
+        intensity: "6.9 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.followLocalAuthorities,
         evacuationSteps: [
-            "신속하게 건물 밖으로 대피",
-            "임시 대피소나 공공 집결지로 이동",
-            "응급 구조대와 통신 유지 및 추가 지시 확인"
+            "Evacuate quickly from the building.",
+            "Move to a temporary shelter or public assembly area.",
+            "Maintain communication with emergency services."
         ]
     ),
     DisasterEvent(
@@ -399,41 +600,25 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 40.8,
         longitude: 29.7,
         year: 1999,
-        description: "1999년 터키 İzmit 지역에서 발생한 대지진.",
-        intensity: "규모 7.6 (리히터)",
+        description: "The İzmit Earthquake in Turkey in 1999.",
+        intensity: "7.6 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 안전한 지역으로 이동",
-            "대피소 집결",
-            "지역 구조대와 연락 유지"
+            "Evacuate immediately to a safe area.",
+            "Assemble at a designated shelter.",
+            "Maintain contact with local rescue teams."
         ]
     ),
-    DisasterEvent(
-        title: "2011 Tohoku Earthquake",
-        type: .earthquake,
-        latitude: 38.3,
-        longitude: 142.4,
-        year: 2011,
-        description: "2011년 일본 동북부에서 발생한 강진과 쓰나미, 후속 원전 사고 포함.",
-        intensity: "규모 9.0 (리히터)",
-        damageReport: CommonDetails.severeCollapse,
-        evacuationInstructions: CommonDetails.immediateEvacuation,
-        evacuationSteps: [
-            "즉각적으로 고지대로 대피",
-            "쓰나미 경보 후 안전 지역에 집결",
-            "지역 당국의 추가 지시를 철저히 준수"
-        ]
-    ),
-    // 8. 2000년대 초기 사건들 (5개)
+    // 8. Early 2000s events (5 items)
     DisasterEvent(
         title: "2002 Iran Earthquake",
         type: .earthquake,
         latitude: 35.7,
         longitude: 51.4,
         year: 2002,
-        description: "2002년 이란에서 발생한 지진.",
-        intensity: "진도 6.5",
+        description: "An earthquake in Iran in 2002.",
+        intensity: "6.5",
         damageReport: CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -444,14 +629,14 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 29.1,
         longitude: 58.3,
         year: 2003,
-        description: "2003년 이란 밤에서 발생한 강진.",
-        intensity: "진도 6.6",
+        description: "The Bam Earthquake in Iran in 2003.",
+        intensity: "6.6",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: [
-            "즉시 건물 밖으로 대피",
-            "임시 대피소로 이동",
-            "지역 당국의 지시 따르기"
+            "Evacuate immediately from the building.",
+            "Move to a temporary shelter.",
+            "Follow local authority instructions."
         ]
     ),
     DisasterEvent(
@@ -460,8 +645,8 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 34.0,
         longitude: 73.0,
         year: 2005,
-        description: "2005년 파키스탄에서 발생한 강진.",
-        intensity: "진도 7.6",
+        description: "The Pakistan Earthquake in 2005.",
+        intensity: "7.6",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -472,8 +657,8 @@ let sampleEvents: [DisasterEvent] = [
         latitude: -12.0,
         longitude: -77.0,
         year: 2007,
-        description: "2007년 페루에서 발생한 강진.",
-        intensity: "진도 7.1",
+        description: "The Peru Earthquake in 2007.",
+        intensity: "7.1",
         damageReport: CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -484,34 +669,33 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 3.3,
         longitude: 98.5,
         year: 2009,
-        description: "2009년 수마트라에서 발생한 강진.",
-        intensity: "진도 7.2",
+        description: "The Sumatra Earthquake in 2009.",
+        intensity: "7.2",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
     ),
-    // 9. 2010년 이후 사건들 (11개)
+    // 9. Post-2010 events (11 items)
     DisasterEvent(
         title: "2010 Haiti Earthquake",
         type: .earthquake,
         latitude: 18.5,
         longitude: -72.3,
         year: 2010,
-        description: "2010년 아이티에서 발생한 대지진.",
-        intensity: "규모 7.0 (리히터)",
+        description: "The Haiti Earthquake in 2010.",
+        intensity: "7.0 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
     ),
-    // 추가 근대 지진 (추가 9개)
     DisasterEvent(
         title: "1990 Manjil–Rudbar Earthquake",
         type: .earthquake,
         latitude: 36.9,
         longitude: 49.8,
         year: 1990,
-        description: "1990년 이란 Manjil–Rudbar 지역에서 발생한 강진.",
-        intensity: "규모 7.4 (리히터)",
+        description: "The Manjil–Rudbar Earthquake in Iran in 1990.",
+        intensity: "7.4 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -522,20 +706,20 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 23.0,
         longitude: 70.0,
         year: 2001,
-        description: "2001년 인도 Gujarat 지역에서 발생한 강진.",
-        intensity: "진도 7.7",
+        description: "The Gujarat Earthquake in India in 2001.",
+        intensity: "7.7",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
     ),
     DisasterEvent(
         title: "2004 Indian Ocean Earthquake",
-        type: .earthquake,
+        type: .earthquakeAndTsunami,
         latitude: 3.3,
         longitude: 95.8,
         year: 2004,
-        description: "2004년 인도양에서 발생한 강진 및 쓰나미.",
-        intensity: "규모 9.1 (리히터)",
+        description: "The Indian Ocean Earthquake and Tsunami in 2004.",
+        intensity: "9.1 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.followLocalAuthorities,
         evacuationSteps: CommonDetails.advancedSteps
@@ -546,8 +730,8 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 28.2,
         longitude: 84.7,
         year: 2015,
-        description: "2015년 네팔에서 발생한 강진.",
-        intensity: "진도 7.8",
+        description: "The Nepal Earthquake in 2015.",
+        intensity: "7.8",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -558,8 +742,8 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 40.5,
         longitude: 44.6,
         year: 1988,
-        description: "1988년 아르메니아 Spitak에서 발생한 강진.",
-        intensity: "규모 6.8 (리히터)",
+        description: "The Spitak Earthquake in Armenia in 1988.",
+        intensity: "6.8 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -570,8 +754,8 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 53.0,
         longitude: 142.0,
         year: 1993,
-        description: "1993년 옥호츠크 해에서 발생한 강진.",
-        intensity: "규모 7.8 (리히터)",
+        description: "The Okhotsk Sea Earthquake in 1993.",
+        intensity: "7.8 (Richter)",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -582,8 +766,8 @@ let sampleEvents: [DisasterEvent] = [
         latitude: 38.0,
         longitude: 26.0,
         year: 2020,
-        description: "2020년 에게해에서 발생한 강진.",
-        intensity: "진도 6.4",
+        description: "The Aegean Sea Earthquake in 2020.",
+        intensity: "6.4",
         damageReport: CommonDetails.moderateDamage,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -594,8 +778,8 @@ let sampleEvents: [DisasterEvent] = [
         latitude: -0.5,
         longitude: 100.0,
         year: 2012,
-        description: "2012년 서수마트라에서 발생한 강진.",
-        intensity: "진도 7.0",
+        description: "The West Sumatra Earthquake in 2012.",
+        intensity: "7.0",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
@@ -606,10 +790,156 @@ let sampleEvents: [DisasterEvent] = [
         latitude: -9.5,
         longitude: 160.0,
         year: 2007,
-        description: "2007년 솔로몬 제도에서 발생한 강진.",
-        intensity: "진도 7.1",
+        description: "The Solomon Islands Earthquake in 2007.",
+        intensity: "7.1",
         damageReport: CommonDetails.severeCollapse,
         evacuationInstructions: CommonDetails.immediateEvacuation,
         evacuationSteps: CommonDetails.basicSteps
+    ),
+    DisasterEvent(
+        title: "2011 Tohoku Tsunami",
+        type: .earthquakeAndTsunami,
+        latitude: 38.0,    // Approximate coastal coordinate
+        longitude: 142.0,
+        year: 2011,
+        description: "Following the massive Tohoku earthquake, a devastating tsunami struck the coast of Japan in 2011.",
+        intensity: "Wave heights up to 40 m, 9.0 (Richter)",
+        damageReport: "The tsunami inundated coastal communities, causing thousands of fatalities and widespread destruction of infrastructure.",
+        evacuationInstructions: "Immediately evacuate to higher ground and follow all local tsunami warnings.",
+        evacuationSteps: [
+            "Evacuate immediately to high ground.",
+            "Listen to local emergency broadcasts.",
+            "Do not return until authorities declare the area safe."
+        ]
+    ),
+    DisasterEvent(
+        title: "1883 Krakatoa Tsunami",
+        type: .earthquakeAndTsunami,
+        latitude: -6.1,
+        longitude: 105.42,
+        year: 1883,
+        description: "The violent eruption of Krakatoa in 1883 triggered a massive tsunami that devastated surrounding Indonesian islands.",
+        intensity: "Wave heights up to 30 m",
+        damageReport: "Tsunami waves reportedly reached heights of up to 40 m in some areas, causing catastrophic coastal destruction and heavy loss of life.",
+        evacuationInstructions: "If a tsunami warning is issued, immediately evacuate to higher ground and avoid coastal areas.",
+        evacuationSteps: [
+            "Immediately evacuate to higher ground.",
+            "Follow local tsunami warnings and instructions.",
+            "Stay away from the coast until the danger subsides."
+        ]
+    ),
+    // Volcano events
+    DisasterEvent(
+        title: "1991 Mount Pinatubo Eruption",
+        type: .volcano,
+        latitude: 15.13,
+        longitude: 120.35,
+        year: 1991,
+        description: "The eruption of Mount Pinatubo in the Philippines in 1991 was one of the largest volcanic events of the 20th century.",
+        intensity: "VEI 6",
+        damageReport: "The eruption produced a massive ash cloud that disrupted air travel worldwide, caused widespread agricultural damage, and triggered deadly floods and landslides.",
+        evacuationInstructions: "Follow local volcanic warnings and evacuate immediately if you are within the hazard zone.",
+        evacuationSteps: [
+            "Monitor volcanic activity updates.",
+            "Evacuate immediately if advised by local authorities.",
+            "Use protective gear (e.g. N95 masks, goggles) to guard against ash."
+        ]
+    ),
+    DisasterEvent(
+        title: "2010 Eyjafjallajökull Eruption",
+        type: .volcano,
+        latitude: 63.63,
+        longitude: -19.62,
+        year: 2010,
+        description: "The eruption of Eyjafjallajökull in Iceland in 2010 caused widespread disruption to air travel across Europe.",
+        intensity: "VEI 4",
+        damageReport: "Localized ashfall resulted in minor structural damage, while airspace closures affected millions of travelers.",
+        evacuationInstructions: "Follow local authorities' instructions if you are near the eruption zone; avoid areas with heavy ashfall.",
+        evacuationSteps: [
+            "Monitor updates on volcanic activity.",
+            "Evacuate if instructed by local officials.",
+            "Stay indoors and use air filtration if ash levels are high."
+        ]
+    ),
+    DisasterEvent(
+        title: "1985 Nevado del Ruiz Eruption",
+        type: .volcano,
+        latitude: 4.90,
+        longitude: -75.32,
+        year: 1985,
+        description: "The eruption of Nevado del Ruiz in Colombia in 1985 triggered a deadly lahar that buried nearby towns.",
+        intensity: "VEI 3–4",
+        damageReport: "The resulting lahar caused over 23,000 fatalities and widespread destruction of infrastructure in the affected region.",
+        evacuationInstructions: "Immediately evacuate if a lahar warning is issued and follow local emergency procedures.",
+        evacuationSteps: [
+            "Evacuate immediately to higher ground.",
+            "Follow local lahar warnings and instructions.",
+            "Seek shelter in designated safe zones."
+        ]
+    ),
+    // Tornado events
+    DisasterEvent(
+        title: "2011 Joplin Tornado",
+        type: .tornado,
+        latitude: 37.1,
+        longitude: -94.5,
+        year: 2011,
+        description: "A devastating tornado struck Joplin, Missouri in 2011, causing widespread destruction and significant fatalities.",
+        intensity: "EF5",
+        damageReport: "The tornado caused catastrophic damage, with over 150 fatalities, thousands injured, and numerous buildings completely destroyed.",
+        evacuationInstructions: "When a tornado warning is issued, seek shelter immediately in a basement or an interior room on the lowest floor away from windows.",
+        evacuationSteps: [
+            "Immediately take cover in a sturdy shelter.",
+            "If outdoors, lie flat in a low-lying area and cover your head.",
+            "Follow local emergency alerts and instructions."
+        ]
+    ),
+    DisasterEvent(
+        title: "2013 Moore Tornado",
+        type: .tornado,
+        latitude: 35.33,
+        longitude: -97.5,
+        year: 2013,
+        description: "A violent tornado struck Moore, Oklahoma in 2013, causing severe damage and significant fatalities.",
+        intensity: "EF5",
+        damageReport: "The tornado resulted in catastrophic damage, with hundreds of fatalities and extensive destruction of homes, businesses, and infrastructure.",
+        evacuationInstructions: "Immediately seek shelter in a basement or a designated storm shelter when a tornado warning is issued.",
+        evacuationSteps: [
+            "Take cover in a secure, windowless area.",
+            "If outside, lie flat and protect your head.",
+            "Follow instructions from local emergency services."
+        ]
+    ),
+    DisasterEvent(
+        title: "2019 Nashville Tornado",
+        type: .tornado,
+        latitude: 36.15,
+        longitude: -86.78,
+        year: 2019,
+        description: "A powerful tornado struck the Nashville area in 2019, causing extensive damage to residential and commercial areas.",
+        intensity: "EF4",
+        damageReport: "The tornado caused significant structural damage, with numerous buildings destroyed and several fatalities reported.",
+        evacuationInstructions: "Immediately seek shelter in a designated storm shelter or a secure building interior when a tornado warning is issued.",
+        evacuationSteps: [
+            "Seek shelter in a basement or interior room away from windows.",
+            "Cover your head and neck with protective gear.",
+            "Stay indoors until the warning is lifted."
+        ]
+    ),
+    DisasterEvent(
+        title: "2020 Easter Tornado Outbreak",
+        type: .tornado,
+        latitude: 33.5,
+        longitude: -86.8,
+        year: 2020,
+        description: "A series of violent tornadoes during the 2020 Easter outbreak in the Southeastern United States caused widespread damage.",
+        intensity: "EF4",
+        damageReport: "Multiple tornadoes resulted in extensive damage to buildings and infrastructure, causing several fatalities and numerous injuries.",
+        evacuationInstructions: "When tornado warnings are issued, immediately take shelter in a secure building or storm shelter.",
+        evacuationSteps: [
+            "Immediately move to a safe interior location away from windows.",
+            "If outdoors, lie in a low-lying area and protect your head.",
+            "Follow local emergency warnings and instructions."
+        ]
     )
 ]
