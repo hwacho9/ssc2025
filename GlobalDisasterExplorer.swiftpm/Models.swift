@@ -2,8 +2,6 @@
 //  Models.swift
 //  ssc2025
 //
-//  Created by 조성화 on 2025/02/19.
-//
 
 import SwiftUI
 
